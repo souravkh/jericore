@@ -46,6 +46,7 @@ Tell the user that this workflow retrieves issues through GitHub MCP. It require
 - Preserve the issue number, URL, title, body, author, creation timestamp, status, labels, and available reproduction details.
 - Report inaccessible repositories, authentication failures, and incomplete results honestly.
 - If GitHub MCP tools are unavailable, do not claim that issues were checked. Tell the user to install or enable a GitHub MCP server in their Copilot/VS Code setup, authenticate it with GitHub, and retry. Do not claim to install or configure the server for them.
+- Once all matching issue pages have been retrieved for the current request, make no further GitHub MCP calls for that request. Continue formatting, presenting, and saving from the retrieved results only. This instruction limits tool use; it does not stop or disconnect the MCP server itself.
 
 Never claim retrieval succeeded unless the tool results confirm it.
 
