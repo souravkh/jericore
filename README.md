@@ -1,20 +1,27 @@
-# jericore
+---
+title: jericore
+description: GitHub Copilot agents for bug reporting, repository checks, and video-to-GIF conversion.
+---
 
-Custom GitHub Copilot agents for VS Code that help with bug reporting and repository security checks.
+## Overview
+
+Custom GitHub Copilot agents for VS Code that help with bug reporting, repository checks, and video conversion.
 
 | Agent | What it does |
 | --- | --- |
 | `bug-task-writer` | Turns a messy bug description into a clean, structured bug report. |
 | `repo-issue-check` | Retrieves open GitHub issues from one or more repositories and returns them as a single summary table. |
-| `dependabot-alert-check` | Retrieves open Dependabot alerts (critical and high by default) and returns them as a single summary table. |
+| `dependabot-alert-check` | Retrieves open Dependabot security alerts (critical and high by default) and can separately report dependency-update pull requests. |
+| `video-to-gif` | Converts videos into optimized animated GIFs using FFmpeg. |
 
-All agents are read-only with respect to GitHub: they never create, edit, or close issues or alerts. Files are written only after you confirm.
+The GitHub agents do not create, edit, or close issues or alerts. Report files are saved only after you confirm. The video agent creates a GIF when you request a conversion and leaves the source video unchanged.
 
 ## Requirements
 
 - VS Code with GitHub Copilot Chat and support for custom agents
 - A GitHub account with access to the repositories you want to check
 - A GitHub MCP server connected and authenticated (needed by `repo-issue-check` and `dependabot-alert-check`; not needed by `bug-task-writer`)
+- FFmpeg and FFprobe installed and available from the command line (needed by `video-to-gif`)
 
 ## Repository layout
 
@@ -24,16 +31,21 @@ All agents are read-only with respect to GitHub: they never create, edit, or clo
     bug-task-writer.agent.md
     repo-issue-check.agent.md
     dependabot-alert-check.agent.md
+    video-to-gif.agent.md
   skills/
     bug-report-format/
     repo-issue-check/
     dependabot-alert-check/
+    video-to-gif/
+      SKILL.md
+      scripts/
+        video-to-gif.ps1
   repositories.example.json
 .vscode/
   mcp.json
 ```
 
-Each agent keeps its rules short and defers the detailed format and behavior to a matching skill in `.github/skills/`.
+Each agent keeps its rules focused and defers detailed behavior to a matching skill in `.github/skills/`. The video-to-GIF skill includes a PowerShell conversion script.
 
 ## Setup
 
@@ -114,15 +126,25 @@ It does not invent details. Missing information is shown as "Not provided", and 
 ### dependabot-alert-check
 
 ```
-[GitHub repository] [severity: critical|high|both]
+[GitHub repository] [severity: critical|high|all]
 ```
 
 - By default it returns open alerts with `critical` and `high` severity. Medium and low are included only if you ask.
-- Output is one table with the columns: ID, Repository, Package, Ecosystem, Severity, Vulnerable Range, Patched Version, Advisory, Scope, Manifest, Created, Alert URL, Suggested Action.
+- Output is one table containing alert details such as repository, package, affected component, ecosystem, severity, advisory, affected and patched versions, dependency scope, manifest, status, and suggested action.
+- Dependency-update PRs appear as separately labeled rows in the table, not as security alerts. The agent does not infer vulnerabilities or severity from PR titles, and grouped PRs have one row per dependency.
 - IDs use the Dependabot alert number, for example `ALERT-12`.
 - Suggested Action comes only from the data: upgrade to the listed patched version, or note that none is listed.
 - After the table it asks whether to save. Reports are written to `dependabot-report-DDMMYYSS.md` and are never overwritten.
 - Your token or login needs permission to read Dependabot alerts, and Dependabot alerts must be enabled on the target repository.
+
+### video-to-gif
+
+In Copilot Chat, select `video-to-gif` and provide a video path. You can also specify a start time, duration, output path, width, or frame rate.
+
+- By default it converts the entire video to a continuously looping GIF beside the source file.
+- The default maximum width is 640 pixels and the default frame rate is 12 FPS. The original aspect ratio is preserved, and smaller videos are not enlarged.
+- FFmpeg and FFprobe must be installed. If either tool is missing, the agent asks before installing FFmpeg with `winget` on Windows.
+- The agent verifies the generated GIF and does not overwrite an existing output without your approval.
 
 ## Managing the MCP server
 
