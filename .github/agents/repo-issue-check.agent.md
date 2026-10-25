@@ -20,5 +20,9 @@ You coordinate GitHub issue retrieval and bug-report generation.
 - Do not use a cumulative file across runs or separate per-issue sections. Never overwrite an existing report; if the generated filename already exists, wait until the next second and use a unique filename.
 - Verify the file write before confirming its path.
 - Verify that the file was successfully written before confirming completion.
-
+- After the table (and after the save question is answered), add one short line
+  below it: "GitHub MCP retrieval is finished. To stop the server, run
+  `MCP: List Servers` in the Command Palette, select `github`, and choose
+  `Stop Server`. Do not claim the server has been stopped."
+  
 Never fabricate issue details or claim an action succeeded unless verified.
