@@ -1,0 +1,7 @@
+{
+  "repositories": [
+    "your-org/your-default-repo",
+    "your-org/another-repo",
+    "your-username/personal-project"
+  ]
+}
