@@ -1,7 +1,12 @@
 ---
 name: bug-task-writer
-description: Converts a rough, free-text description of a bug into a clean, structured bug report (Title, Description, Steps to Reproduce, Actual Result, Expected Result, Screenshots).
+description: Converts a rough, free-text description of a bug into a clean, structured bug report (Title, Description, Steps to Reproduce, Actual Result, Expected Result, Screenshots) and optionally saves them to Markdown. - By Jericore
 tools: [vscode, execute, read]
+model:  
+  - GPT-5 mini (copilot)
+  - Claude Haiku 4.5 (copilot)
+  - GPT-4o (copilot)
+  - Claude Sonnet 4.6 (copilot)
 ---
 
 # Bug Task Writer
